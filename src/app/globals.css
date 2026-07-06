@@ -61,38 +61,44 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+  /*
+   * Warm, paper-and-ink theme (not the default gray): a cream page, a slightly
+   * lighter card surface, ink-brown text, and a forest-green primary. Picked to
+   * live comfortably alongside the warm board below, so the whole UI reads as
+   * one wooden set rather than gray chrome around a brown board.
+   */
+  --background: oklch(0.967 0.013 84);
+  --foreground: oklch(0.27 0.018 66);
+  --card: oklch(0.981 0.013 84);
+  --card-foreground: oklch(0.27 0.018 66);
+  --popover: oklch(0.981 0.013 84);
+  --popover-foreground: oklch(0.27 0.018 66);
+  --primary: oklch(0.52 0.1 150);
+  --primary-foreground: oklch(0.98 0.012 84);
+  --secondary: oklch(0.935 0.014 84);
+  --secondary-foreground: oklch(0.3 0.018 66);
+  --muted: oklch(0.935 0.014 84);
+  --muted-foreground: oklch(0.52 0.02 70);
+  --accent: oklch(0.925 0.022 88);
+  --accent-foreground: oklch(0.28 0.018 66);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
+  --border: oklch(0.885 0.016 82);
+  --input: oklch(0.885 0.016 82);
+  --ring: oklch(0.52 0.1 150);
   --chart-1: oklch(0.871 0.006 286.286);
   --chart-2: oklch(0.552 0.016 285.938);
   --chart-3: oklch(0.442 0.017 285.786);
   --chart-4: oklch(0.37 0.013 285.805);
   --chart-5: oklch(0.274 0.006 286.033);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.21 0.006 285.885);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.705 0.015 286.067);
+  --sidebar: oklch(0.981 0.013 84);
+  --sidebar-foreground: oklch(0.27 0.018 66);
+  --sidebar-primary: oklch(0.52 0.1 150);
+  --sidebar-primary-foreground: oklch(0.98 0.012 84);
+  --sidebar-accent: oklch(0.925 0.022 88);
+  --sidebar-accent-foreground: oklch(0.28 0.018 66);
+  --sidebar-border: oklch(0.885 0.016 82);
+  --sidebar-ring: oklch(0.52 0.1 150);
   /*
    * The board stays warm in both themes - like lichess and chess.com, the
    * board is the hero and never follows the gray UI chrome. Classic cream
@@ -110,37 +116,39 @@
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
+  /* The same warm theme dimmed to a near-black, faintly brown page and a warm
+     charcoal card - so dark mode still feels like wood and lamplight, not slate. */
+  --background: oklch(0.16 0.006 66);
+  --foreground: oklch(0.95 0.01 84);
+  --card: oklch(0.205 0.008 66);
+  --card-foreground: oklch(0.95 0.01 84);
+  --popover: oklch(0.205 0.008 66);
+  --popover-foreground: oklch(0.95 0.01 84);
+  --primary: oklch(0.63 0.12 150);
+  --primary-foreground: oklch(0.16 0.02 150);
+  --secondary: oklch(0.26 0.009 66);
+  --secondary-foreground: oklch(0.95 0.01 84);
+  --muted: oklch(0.26 0.009 66);
+  --muted-foreground: oklch(0.7 0.015 80);
+  --accent: oklch(0.29 0.012 70);
+  --accent-foreground: oklch(0.95 0.01 84);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.552 0.016 285.938);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.63 0.12 150);
   --chart-1: oklch(0.871 0.006 286.286);
   --chart-2: oklch(0.552 0.016 285.938);
   --chart-3: oklch(0.442 0.017 285.786);
   --chart-4: oklch(0.37 0.013 285.805);
   --chart-5: oklch(0.274 0.006 286.033);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar: oklch(0.205 0.008 66);
+  --sidebar-foreground: oklch(0.95 0.01 84);
+  --sidebar-primary: oklch(0.63 0.12 150);
+  --sidebar-primary-foreground: oklch(0.16 0.02 150);
+  --sidebar-accent: oklch(0.29 0.012 70);
+  --sidebar-accent-foreground: oklch(0.95 0.01 84);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.552 0.016 285.938);
+  --sidebar-ring: oklch(0.63 0.12 150);
   /* The same warm board, dimmed to sit comfortably on the dark chrome.
      Staying in the midtones keeps solid-black pawns readable - squares
      near black are what made them vanish. */

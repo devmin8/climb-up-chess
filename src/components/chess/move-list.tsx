@@ -5,6 +5,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  ListOrdered,
 } from "lucide-react";
 import { Fragment, useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
@@ -112,7 +113,15 @@ export function MoveList({ history, currentPly, onSelectPly }: MoveListProps) {
       </div>
       <div className="max-h-72 grow overflow-y-auto lg:max-h-none">
         {rows.length === 0 ? (
-          <p className="px-3 py-2 text-muted-foreground">No moves yet</p>
+          <div className="flex h-full flex-col items-center justify-center gap-2 px-6 py-12 text-center">
+            <span className="flex size-9 items-center justify-center rounded-full bg-muted text-muted-foreground/70">
+              <ListOrdered className="size-4" />
+            </span>
+            <p className="font-medium text-foreground/80">No moves yet</p>
+            <p className="text-xs text-muted-foreground">
+              Play a move to start the game
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-[2.5rem_1fr_1fr]">{rows}</div>
         )}
@@ -139,6 +148,7 @@ function NavButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
+      className="rounded-md"
     >
       {children}
     </Button>

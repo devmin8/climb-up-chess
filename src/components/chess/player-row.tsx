@@ -30,14 +30,15 @@ export function PlayerRow({
   isActive,
 }: PlayerRowProps) {
   return (
-    <div className="flex items-center gap-2 px-3 py-2.5">
+    <div className="flex items-center gap-2.5 px-4 py-3">
       <span
         aria-hidden
         className={cn(
-          "size-3 shrink-0 rounded-full border",
-          color === "white"
-            ? "border-zinc-400 bg-white"
-            : "border-zinc-500 bg-zinc-950",
+          // Fixed piece colours (not theme tokens - a black piece is dark in
+          // both themes); the border keeps whichever dot matches the surface
+          // from disappearing into it.
+          "size-3 shrink-0 rounded-full border border-foreground/30",
+          color === "white" ? "bg-stone-100" : "bg-stone-900",
         )}
       />
       <span className="text-sm font-semibold">
@@ -47,7 +48,7 @@ export function PlayerRow({
         <span className="flex items-center" title="To move">
           <span
             aria-hidden
-            className="size-1.5 animate-pulse rounded-full bg-emerald-500"
+            className="size-1.5 animate-pulse rounded-full bg-primary"
           />
           <span className="sr-only">to move</span>
         </span>
