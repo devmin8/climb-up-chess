@@ -2,6 +2,18 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/*
+ * Chessground's stylesheets are plain (un-layered) CSS, and un-layered CSS
+ * outranks everything inside @layer - including every Tailwind utility.
+ * Importing them into the `components` layer files them below `utilities`,
+ * so our classes can override chessground's defaults like any other style.
+ */
+@import "@lichess-org/chessground/assets/chessground.base.css" layer(components);
+@import "@lichess-org/chessground/assets/chessground.brown.css"
+  layer(components);
+@import "@lichess-org/chessground/assets/chessground.cburnett.css"
+  layer(components);
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

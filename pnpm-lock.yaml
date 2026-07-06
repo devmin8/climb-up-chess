@@ -11,6 +11,12 @@ importers:
       '@base-ui/react':
         specifier: ^1.6.0
         version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@lichess-org/chessground':
+        specifier: ^10.1.1
+        version: 10.1.1
+      chess.js:
+        specifier: ^1.4.0
+        version: 1.4.0
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -487,6 +493,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
+  '@lichess-org/chessground@10.1.1':
+    resolution: {integrity: sha512-IBEs8+J64/zE8QB4NXxsvpjm/tHRjfQAdWwUh4xzqqN+RValgthWHemLnxsmtHFwuxvO4lHd+crp1ecgZxKVoQ==}
+
   '@modelcontextprotocol/sdk@1.29.0':
     resolution: {integrity: sha512-zo37mZA9hJWpULgkRpowewez1y6ML5GsXJPY8FI0tBBCd77HEvza4jDqRKOXgHNn867PVGCyTdzqpz0izu5ZjQ==}
     engines: {node: '>=18'}
@@ -781,6 +790,9 @@ packages:
   chalk@5.6.2:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+
+  chess.js@1.4.0:
+    resolution: {integrity: sha512-BBJgrrtKQOzFLonR0l+k64A98NLemPwNsCskwb+29bRwobUa4iTm51E1kwGPbWXAcfdDa18nad6vpPPKPWarqw==}
 
   class-variance-authority@0.7.1:
     resolution: {integrity: sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==}
@@ -2339,6 +2351,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@lichess-org/chessground@10.1.1': {}
+
   '@modelcontextprotocol/sdk@1.29.0(zod@3.25.76)':
     dependencies:
       '@hono/node-server': 1.19.14(hono@4.12.27)
@@ -2585,6 +2599,8 @@ snapshots:
   caniuse-lite@1.0.30001800: {}
 
   chalk@5.6.2: {}
+
+  chess.js@1.4.0: {}
 
   class-variance-authority@0.7.1:
     dependencies:
