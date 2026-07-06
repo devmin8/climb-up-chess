@@ -93,6 +93,20 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+  /*
+   * The board stays warm in both themes - like lichess and chess.com, the
+   * board is the hero and never follows the gray UI chrome. Classic cream
+   * and brown squares (the lichess default), with the proven yellow
+   * last-move / green interaction highlights that read on both square
+   * colors. Dark mode dims the same palette rather than replacing it.
+   */
+  --board-square-light: oklch(0.9 0.045 84); /* cream, ~#f0d9b5 */
+  --board-square-dark: oklch(0.67 0.077 63); /* brown, ~#b58863 */
+  --board-last-move: oklch(0.78 0.17 118 / 0.45);
+  --board-selected: oklch(0.46 0.1 145 / 0.5);
+  --board-move-dest: oklch(0.35 0.09 145 / 0.45);
+  --board-coord-on-light: oklch(0.52 0.075 63 / 0.95);
+  --board-coord-on-dark: oklch(0.94 0.03 84 / 0.95);
 }
 
 .dark {
@@ -127,6 +141,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  /* The same warm board, dimmed to sit comfortably on the dark chrome.
+     Staying in the midtones keeps solid-black pawns readable - squares
+     near black are what made them vanish. */
+  --board-square-light: oklch(0.82 0.04 84);
+  --board-square-dark: oklch(0.6 0.068 63);
+  --board-last-move: oklch(0.72 0.15 118 / 0.5);
+  --board-selected: oklch(0.45 0.1 145 / 0.55);
+  --board-move-dest: oklch(0.3 0.08 145 / 0.5);
+  --board-coord-on-light: oklch(0.48 0.07 63 / 0.95);
+  --board-coord-on-dark: oklch(0.92 0.03 84 / 0.95);
 }
 
 @layer base {
@@ -139,4 +163,50 @@
   html {
     @apply font-sans;
   }
+}
+
+/*
+ * Board theming. Chessground's brown theme paints the squares with a baked-in
+ * SVG that ignores light/dark mode. These rules are deliberately un-layered
+ * so they outrank the layer(components) imports above, and repaint the board
+ * from the app's own `--board-*` palette. The checkerboard is a repeating
+ * 2x2-square conic-gradient tile: dark in the top-right/bottom-left
+ * quadrants, light (the background color) elsewhere - a8 stays a light
+ * square, as on a real board.
+ */
+cg-board {
+  background-color: var(--board-square-light);
+  background-image: conic-gradient(
+    var(--board-square-dark) 0 25%,
+    transparent 0 50%,
+    var(--board-square-dark) 0 75%,
+    transparent 0
+  );
+  background-size: 25% 25%;
+}
+
+cg-board square.last-move {
+  background-color: var(--board-last-move);
+}
+cg-board square.selected,
+cg-board square.move-dest:hover,
+cg-board square.move-dest.hover {
+  background: var(--board-selected);
+}
+cg-board square.move-dest {
+  background: radial-gradient(var(--board-move-dest) 22%, transparent 0);
+}
+/* Occupied destination (a capture): a ring around the piece, not a dot under it. */
+cg-board square.oc.move-dest {
+  background: radial-gradient(transparent 0 80%, var(--board-move-dest) 0);
+}
+
+/* Rank/file labels, alternating to contrast with the square each sits on. */
+.orientation-white .ranks :nth-child(odd),
+.orientation-white .files :nth-child(even) {
+  color: var(--board-coord-on-light);
+}
+.orientation-white .ranks :nth-child(even),
+.orientation-white .files :nth-child(odd) {
+  color: var(--board-coord-on-dark);
 }

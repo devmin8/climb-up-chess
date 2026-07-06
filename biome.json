@@ -27,6 +27,18 @@
       "react": "recommended"
     }
   },
+  "overrides": [
+    {
+      "includes": ["src/app/globals.css"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnknownTypeSelector": "off"
+          }
+        }
+      }
+    }
+  ],
   "assist": {
     "actions": {
       "source": {

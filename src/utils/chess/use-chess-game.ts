@@ -3,12 +3,14 @@
 import { Chessground } from "@lichess-org/chessground";
 import type { Api } from "@lichess-org/chessground/api";
 import type { Dests, Key } from "@lichess-org/chessground/types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ChessGame,
   type ChessGameSnapshot,
   type Color,
   type GameStatus,
+  type MoveRecord,
+  opposite,
   type PromotionPiece,
   type Square,
 } from "~/utils/chess/chess-game";
@@ -31,11 +33,29 @@ interface PendingPromotion {
 }
 
 /**
+ * Everything chessground needs to render one position — either the live game
+ * or a past ply being browsed. Collapsing both cases into this one shape
+ * means the board-sync code doesn't know or care which it's showing.
+ */
+interface BoardView {
+  fen: string;
+  turn: Color;
+  check: boolean;
+  lastMove: { from: Square; to: Square } | null;
+  viewOnly: boolean;
+  dests: Map<Square, Square[]>;
+}
+
+/**
  * Everything a two-player chess board needs, in one hook: owns the rules
  * engine, mounts chessground onto whatever element `boardRef` is attached
  * to, keeps the two in sync as moves are played, and manages the
  * promotion-piece prompt. A component only has to render `<div ref={boardRef} />`
  * plus whatever it wants to show for `snapshot` and `pendingPromotion`.
+ *
+ * History browsing: `goToPly` shows any past position (0 = start,
+ * `history.length` = latest). While browsing, the board is view-only;
+ * navigating back to the latest ply resumes live play.
  *
  * `initialFen` is read once when the game is created; to change position
  * later, call `game.loadFen()` or remount with a React `key`.
@@ -49,12 +69,35 @@ export function useChessGame(initialFen?: string) {
   );
   const [pendingPromotion, setPendingPromotion] =
     useState<PendingPromotion | null>(null);
+  // null = follow the live game; a number = browsing that ply of history.
+  const [viewedPly, setViewedPly] = useState<number | null>(null);
 
   useEffect(() => {
     // Sync once on subscribe, then follow every engine change.
     setSnapshot(game.snapshot);
     return game.onChange(setSnapshot);
   }, [game]);
+
+  const plyCount = snapshot.history.length;
+  // Clamped so an undo/reset shrinking the history can't strand the view.
+  const currentPly = Math.min(viewedPly ?? plyCount, plyCount);
+  const isGameOver = GAME_OVER_KINDS.has(snapshot.status.kind);
+
+  const boardView = useMemo<BoardView>(() => {
+    if (currentPly < plyCount) {
+      return historicalBoardView(snapshot.history, currentPly);
+    }
+    return {
+      fen: snapshot.fen,
+      turn: snapshot.turn,
+      check:
+        snapshot.status.kind === "check" ||
+        snapshot.status.kind === "checkmate",
+      lastMove: snapshot.lastMove,
+      viewOnly: isGameOver,
+      dests: game.legalDestinations,
+    };
+  }, [game, snapshot, currentPly, plyCount, isGameOver]);
 
   function attemptMove(from: Square, to: Square): void {
     if (game.isPromotion(from, to)) {
@@ -83,13 +126,16 @@ export function useChessGame(initialFen?: string) {
     resync();
   }
 
-  const isGameOver = GAME_OVER_KINDS.has(snapshot.status.kind);
-  const { boardRef, resync } = useChessgroundBoard(
-    game,
-    snapshot,
-    isGameOver,
-    attemptMove,
-  );
+  /** Shows the position after `ply` half-moves (clamped to the game's range). */
+  function goToPly(ply: number): void {
+    // Navigating away abandons an unanswered promotion prompt.
+    if (pendingPromotion) cancelPromotion();
+    const clamped = Math.max(0, Math.min(ply, plyCount));
+    // Landing back on the latest move resumes following the live game.
+    setViewedPly(clamped === plyCount ? null : clamped);
+  }
+
+  const { boardRef, resync } = useChessgroundBoard(boardView, attemptMove);
 
   return {
     game,
@@ -99,14 +145,34 @@ export function useChessGame(initialFen?: string) {
     pendingPromotion,
     resolvePromotion,
     cancelPromotion,
+    currentPly,
+    goToPly,
   };
 }
 
-/** Mounts a chessground instance on the returned ref and keeps it synced to the engine's snapshot. */
+/**
+ * The board view for a past position. Only called with `ply < history.length`,
+ * so `history` is never empty here. Check status is read off the SAN suffix -
+ * chess.js already annotated it when the move was played.
+ */
+function historicalBoardView(
+  history: readonly MoveRecord[],
+  ply: number,
+): BoardView {
+  const played = ply > 0 ? history[ply - 1] : null;
+  return {
+    fen: played ? played.fenAfter : history[0].fenBefore,
+    turn: played ? opposite(played.color) : history[0].color,
+    check: played ? /[+#]$/.test(played.san) : false,
+    lastMove: played ? { from: played.from, to: played.to } : null,
+    viewOnly: true,
+    dests: new Map(),
+  };
+}
+
+/** Mounts a chessground instance on the returned ref and keeps it synced to the given view. */
 function useChessgroundBoard(
-  game: ChessGame,
-  snapshot: ChessGameSnapshot,
-  isGameOver: boolean,
+  view: BoardView,
   onMove: (from: Square, to: Square) => void,
 ) {
   const boardRef = useRef<HTMLDivElement>(null);
@@ -119,17 +185,15 @@ function useChessgroundBoard(
 
   function resync(): void {
     apiRef.current?.set({
-      fen: snapshot.fen,
+      fen: view.fen,
       orientation: BOARD_ORIENTATION,
-      turnColor: snapshot.turn,
-      check:
-        snapshot.status.kind === "check" ||
-        snapshot.status.kind === "checkmate",
-      lastMove: toLastMove(snapshot.lastMove),
-      viewOnly: isGameOver,
+      turnColor: view.turn,
+      check: view.check,
+      lastMove: toLastMove(view.lastMove),
+      viewOnly: view.viewOnly,
       movable: {
-        color: isGameOver ? undefined : snapshot.turn,
-        dests: toDests(game.legalDestinations),
+        color: view.viewOnly ? undefined : view.turn,
+        dests: toDests(view.dests),
       },
     });
   }
@@ -156,8 +220,8 @@ function useChessgroundBoard(
     return () => api.destroy();
   }, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: resync reads current closures each render; re-running it on every snapshot/isGameOver change is exactly what's wanted
-  useEffect(resync, [game, snapshot, isGameOver]);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: resync reads the current view each render; `view` is memoized upstream, so this runs exactly when the position to display changes
+  useEffect(resync, [view]);
 
   return { boardRef, resync };
 }

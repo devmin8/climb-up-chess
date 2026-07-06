@@ -13,6 +13,10 @@ export type PieceSymbol = ChessJsPieceSymbol;
 
 export type Color = "white" | "black";
 
+export function opposite(color: Color): Color {
+  return color === "white" ? "black" : "white";
+}
+
 /** The pieces a pawn can promote to. */
 export type PromotionPiece = "q" | "r" | "b" | "n";
 
@@ -26,6 +30,10 @@ export interface MoveRecord {
   captured?: PieceSymbol;
   promotion?: PromotionPiece;
   isCapture: boolean;
+  /** FEN of the position this move was played from. Lets a UI show any past position without replaying the game. */
+  fenBefore: string;
+  /** FEN of the position this move produced. */
+  fenAfter: string;
 }
 
 /** The state of the game right now, from "still playing" to a finished result. */
@@ -193,5 +201,7 @@ function toMoveRecord(move: ChessJsMove): MoveRecord {
     captured: move.captured,
     promotion: move.promotion as PromotionPiece | undefined,
     isCapture: move.isCapture(),
+    fenBefore: move.before,
+    fenAfter: move.after,
   };
 }
